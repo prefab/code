@@ -1,0 +1,287 @@
+﻿<Window x:Class="SavedVideoInterpreter.EditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Name="VideoInterpretMainWindow" 
+        Title="Prefab Video Editor" 
+        Height="523" Width="887" 
+        xmlns:local="clr-namespace:SavedVideoInterpreter"
+        xmlns:avalonControls="http://schemas.AvalonControls/AvalonControlsLibrary/Controls"
+        DataContext="{Binding ElementName=VideoInterpretMainWindow}"
+         RenderOptions.BitmapScalingMode="NearestNeighbor"
+        SnapsToDevicePixels="True"
+        Loaded="VideoInterpretMainWindow_Loaded"  WindowState="Maximized"  >
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="DarkSquareColor" Color="#242424" />
+        <SolidColorBrush x:Key="LightSquareColor" Color="#292929" />
+        <DrawingBrush x:Key="CheckerPattern" Viewport="0,0,2,2" ViewportUnits="Absolute" Stretch="None" TileMode="Tile">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="{DynamicResource DarkSquareColor}">
+                        <GeometryDrawing.Geometry>
+                            <GeometryGroup>
+                                <RectangleGeometry Rect="0,0,1,1"/>
+                                <RectangleGeometry Rect="1,1,1,1"/>
+                            </GeometryGroup>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing Brush="{DynamicResource LightSquareColor}">
+                        <GeometryDrawing.Geometry>
+                            <GeometryGroup>
+                                <RectangleGeometry Rect="1,0,1,1"/>
+                                <RectangleGeometry Rect="0,1,1,1"/>
+                            </GeometryGroup>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+
+    </Window.Resources>
+    
+    <Grid Background="{StaticResource CheckerPattern}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            
+            
+            <ColumnDefinition ></ColumnDefinition>
+            <ColumnDefinition Width="300" ></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <Menu Name="TopMenu" Grid.Row="0" Grid.ColumnSpan="3" IsMainMenu="True" IsEnabled="False"
+              Height="20" VerticalAlignment="Top" BorderBrush="Black" BorderThickness="0,0,0,1">
+            
+            <MenuItem Name="FileMenuItem" Header="_File">
+                <MenuItem Header="Open">
+                    <MenuItem Name="OpenMenuItem" Header="Screenshot or Video" Click="OpenMenuItem_Click"/>
+                    <MenuItem Name="OpenAnnotationsMenuItem" Header="Annotations" Click="OpenAnnotationsMenuItem_Click"/>
+                </MenuItem>
+
+            </MenuItem>
+
+            
+            
+            <MenuItem Header="Annotate" ToolTip="Add or remove a Prototype, Target, or other Annotation">
+                <MenuItem x:Name="TagIsTargetMenuItem" Header="is__target = true" ToolTip="Tag a Target" Click="IsTargetAnnotationMenuItem_Click" />
+                <MenuItem x:Name="TagIsNotTargetMenuItem" Header="is__target = false" ToolTip="Tag Not a Target" Click="RemoveTargetMenuItem_Click"/>
+                <Separator/>
+                <MenuItem x:Name="TagMinorTargetMenuItem" Header="is__minor = true" ToolTip="Tag Minor Target" Click="MarkMinorTarget_Click"/>
+                <MenuItem x:Name="TagMajorTargetMenuItem" Header="is__minor = false" ToolTip="Tag a Major Target" Click="MarkMajorTarget_Click"/>
+                <Separator />
+                <MenuItem x:Name="TagIsTextMenuItem" Header="is__text = true" ToolTip="Mark the selected elements as text" Click="MarkIsText_Click"/>
+                <MenuItem x:Name="TagIsNotTextMenuItem" Header="is__text = false"  ToolTip="Mark the select elements as not text" Click="MarkNotText_Click"/>
+            </MenuItem>
+            <MenuItem Header="Prototypes">
+                <MenuItem Name="ExtractNinePart" Header="Nine-Part Prototype (Rectangles, Containers, Buttons, Menus)" Click="CommandToolbar_ExtractNinePartClicked" />
+                <MenuItem x:Name="ExtractOnePart" Header="One-Part Prototype (Icons)" Click="CommandToolbar_ExtractOnePartClicked" />
+                <MenuItem x:Name="ExtractSlider" Header="Five-Part Prototype (Sliders)" Click="CommandToolbar_ExtractSliderClicked" />
+                <MenuItem x:Name="ExtractScrollBar" Header="Vertical Scrollbars" />
+                <MenuItem x:Name="ExtractHorizScrollBar" Header="Horizontal Scrollbars"/>
+                <Separator></Separator>
+                <MenuItem x:Name="NegativeExample" Header="Negative Example" ToolTip="Mark Widget Incorrect" Click="NegativeExample_Click"/>
+            </MenuItem>
+            <MenuItem Header="Tools">
+                <MenuItem x:Name="SnapButton" Header="Snap" ToolTip="Snap Rectangles to Edges" Click="CommandToolbar_SnapButtonClicked" />
+                <MenuItem x:Name="PtypeBrowser" Header="Prototype Browser" ToolTip="View All Prototypes" Click="PtypeBrowser_Click" />
+                <MenuItem x:Name="RuntimeStorageBrowserMenuItem" Header="Runtime Storage" ToolTip="View Runtime Data" Click="RuntimeStorageBrowser_Click" />
+            </MenuItem>
+        </Menu>
+
+
+
+        <Grid Margin="5,30,5,15"  Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="90"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="220"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            
+
+            <StackPanel  Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" Orientation="Vertical" VerticalAlignment="Top">
+                <Label Foreground="White" HorizontalAlignment="Center" Content="Zoom"></Label>
+                <Slider HorizontalAlignment="Center" Name="ZoomSlider"  Maximum="1000" Minimum="10" SmallChange="1" 
+                            LargeChange="10" IsSnapToTickEnabled="True" Value="100"
+                            ValueChanged="ZoomSlider_ValueChanged"  
+                            Orientation="Vertical" Height="100"></Slider>
+                
+                <TextBox HorizontalAlignment="Center" Name="ZoomPercent"  Text="100%" TextChanged="ZoomPercent_TextChanged" />
+                
+                <ToggleButton Margin="5,40,0,0" Checked="DrawButton_Checked" Unchecked="DrawButton_Unchecked" Content="Draw" Name="DrawButton" IsChecked="False"></ToggleButton>
+                <ToggleButton Margin="5,5,0,0" Checked="InspectButton_Checked" Unchecked="InspectButton_Unchecked" Content="Inspect" Name="InspectButton" IsChecked="True"></ToggleButton>
+
+                <Button Name="ClearSelectionButton"  Margin="5,15,0,0"
+                                Click="ClearSelectionButton_Click">
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">Clear Selection</TextBlock></Button>
+            </StackPanel>
+
+            <ScrollViewer Grid.Column="1" Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,0,0,0" >
+                <Grid Name="ImageGrid"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" MouseWheel="ScrollViewer_MouseWheel_1">
+                    <Image Name="CapturedWindowImage" MouseDown="Image_MouseDown" MouseUp="Image_MouseUp" MouseMove="Image_MouseMove" 
+                           MouseEnter="CapturedWindowImage_MouseEnter" MouseLeave="CapturedWindowImage_MouseLeave"
+                            Source="{Binding Path=CapturedWindow}" 
+                            Stretch="None" Width="1" Height="1" VerticalAlignment="Top" HorizontalAlignment="Left" >
+                    </Image>
+                    <local:HelloWorldOverlay x:Name="HelloWorldControl" IsHitTestVisible="False" Visibility="Hidden"
+                                                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></local:HelloWorldOverlay>
+                    <local:RectangleViewer x:Name="RectangleViewerControl" RectangleClosed="RectangleViewerControl_RectangleClosed" 
+                                           RectangleSelectionChanged="RectangleViewerControl_RectangleSelectionChanged" MouseMove="RectangleViewerControl_MouseMove" ></local:RectangleViewer>
+                    <local:RectangleViewer x:Name="UserDrawnRectangleControl"  ></local:RectangleViewer>
+                    <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False" >
+                        <Rectangle x:Name="DragRectangleControl" Canvas.Left="{Binding Path=DragRect.Left}" 
+                           Canvas.Top="{Binding Path=DragRect.Top}" Width="{Binding Path=DragRect.Width}" IsHitTestVisible="False"
+                           Height="{Binding Path=DragRect.Height}" Stroke="Red" StrokeThickness="1" Fill="Transparent"/>
+                        <local:BubbleCursorOverlay x:Name="BubbleCursorControl" IsHitTestVisible="False" Visibility="Hidden"
+                                                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></local:BubbleCursorOverlay>
+
+                        
+                    </Canvas>
+
+                </Grid>
+            </ScrollViewer>
+
+            <GridSplitter Background="#6897BB" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Height="2" VerticalAlignment="Top"></GridSplitter>
+
+
+            <TabControl Background="Transparent" Grid.Row="1" Grid.ColumnSpan="2">
+                <TabItem Header="Frames">
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Vertical" HorizontalAlignment="Stretch" Height="220" VerticalAlignment="Stretch" >
+                        <local:AnnotationGridView  Grid.Row="1" Grid.ColumnSpan="2" Width="Auto"  x:Name="AnnotationThumbView" SelectionChanged="AnnotationThumbView_SelectionChanged" SelectedIndex="{Binding Path=SelectedFrameIndex, Mode=TwoWay}" ></local:AnnotationGridView>
+                </StackPanel>
+                </TabItem>
+                <TabItem x:Name="ErrorTab" Header="Error">
+                    <TextBox IsReadOnly="True" Foreground="White" Background="Transparent" 
+                             TextWrapping="Wrap" Text="{Binding Path=ErrorText}"/>
+                </TabItem>
+                <TabItem Header="Console">
+                        <Grid>
+
+                        <ScrollViewer Name="ConsoleScroll" VerticalScrollBarVisibility="Auto">
+                            <TextBox Name="ConsoleTextBox" IsReadOnly="True" Foreground="White" Background="Transparent"
+                             TextWrapping="Wrap" Text="{Binding Path=ConsoleOutputText}"/>
+                        </ScrollViewer>
+                        <Button HorizontalAlignment="Right" Margin="25 10" Height="20" VerticalAlignment="Top" Content="Clear Output" Click="ClearConsoleButton_Click"></Button>
+
+                    </Grid>
+                    
+                    
+                </TabItem>
+            </TabControl>
+
+
+            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+
+                <Label Foreground="White"  HorizontalAlignment="Center">Skim to a Frame</Label>
+
+                <Slider Name="FrameSlider"  Width="450" Height="80" Margin="10,0,10,0" IsEnabled="False" ValueChanged="FrameSlider_ValueChanged"
+                    IsSnapToTickEnabled="True" SmallChange="1" LargeChange="1" TickFrequency="1" TickPlacement="BottomRight" IsSelectionRangeEnabled="True"></Slider>
+
+
+                <Label Foreground="White">Frame:</Label>
+                <Label Foreground="White"  Name="CurrentFrameLabel">-</Label>
+                <Label Foreground="White">/</Label>
+                <Label Foreground="White"  Name="TotalFrameCountLabel">-</Label>
+                
+                <Label Foreground="White"  Content="{Binding Path=CurrentPixelValue}" HorizontalAlignment="Right" Margin="10,0,10,0"></Label>
+
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal">
+                
+                <CheckBox Name="UseMultipleFramesCheckbox" IsEnabled="False" Content="Use Multiple Frames" Foreground="White" Margin="5,0,5,0" 
+                          Checked="UseMultipleFramesCheckbox_Checked" Unchecked="UseMultipleFramesCheckbox_Unchecked" Visibility="Collapsed"></CheckBox>
+                <RadioButton Name="MultipleFramesStartRadio" Visibility="Collapsed" IsEnabled="False" Content="Start" Foreground="White"  Margin="5,0,5,0"></RadioButton>
+                <RadioButton Name="MultipleFramesEndRadio" Visibility="Collapsed" IsEnabled="False" Content="End" Foreground="White"  Margin="5,0,5,0"></RadioButton>
+                <CheckBox Name="ShowBubbleCursor" IsEnabled="True" IsChecked="False" Content="Render Bubble Cursor" Foreground="White" Margin="15,0,5,0" 
+                          Unchecked="ShowBubbleCursor_Unchecked"  Checked="ShowBubbleCursor_Checked"></CheckBox>
+                
+                
+                <CheckBox Name="ShowAnnotationOverlays" IsEnabled="True" IsChecked="False" Content="Show Annotation Library Overlays"
+                          Foreground="White" Margin="15,0,5,0" Visibility="Collapsed" Checked="ShowAnnotationOverlays_Checked" Unchecked="ShowAnnotationOverlays_Unchecked"></CheckBox>
+                <CheckBox Name="ShowHelloWorld" Margin="15,0,5,0" Checked="ShowHelloWorld_Checked" IsChecked="False"
+                          Unchecked="ShowHelloWorld_Unchecked" Foreground="White" Content="Render Hello World"></CheckBox>
+                
+            </StackPanel>
+
+        </Grid>
+        
+        <GridSplitter Margin="0,30,0,30" Grid.Row="1" Grid.Column="0" Width="1" HorizontalAlignment="Right" Background="#6897BB"></GridSplitter>
+
+        <Grid Margin="0,30,0,0" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="250"></RowDefinition>
+                <RowDefinition Height="200"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="110"></RowDefinition>
+            </Grid.RowDefinitions>
+
+          
+            
+            <local:LayerLibrariesView Grid.Row="0" x:Name="LayerChainViewControl" HorizontalAlignment="Stretch"
+                                  Visibility="Collapsed"
+                                  ReloadLayersClicked="LayerChainViewControl_ReloadClicked"
+                                  LayerMoved="LayerChainViewControl_LayerMoved"
+                                  ParameterAdded="LayerChainViewControl_ParameterAdded" 
+                                  LayerDeleted="LayerChainViewControl_LayerDeleted"
+                                  LayerAdded="LayerChainViewControl_LayerDeleted"
+                                  ParameterRemoved="LayerChainViewControl_ParameterRemoved" 
+                                  VerticalAlignment="Stretch"></local:LayerLibrariesView>
+            <GridSplitter HorizontalAlignment="Stretch" Grid.Row="0" VerticalAlignment="Bottom" Height="4"  Background="#6897BB"></GridSplitter>
+            
+            <local:TreeBrowser Grid.Row="1"  x:Name="TreeBrowserControl" HorizontalAlignment="Stretch" Background="{StaticResource CheckerPattern}"  ></local:TreeBrowser>
+            <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="#6897BB" />
+
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Label Foreground="White" Content="Element Properties" />
+                
+                <ItemsControl x:Name="SelectedNodesControl"    ItemsSource="{Binding Path=SelectedNodes}" Padding="0,0,0,0" >
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel.Resources>
+                                    <Style TargetType="local:PropertiesControl">
+                                        <Setter Property="Margin" Value="10,10,10,10" />
+                                    </Style>
+                                </StackPanel.Resources>
+                            </StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+
+            <GridSplitter Background="#6897BB"  Grid.Row="2" Height="4" 
+                          HorizontalAlignment="Stretch" 
+                          VerticalAlignment="Bottom"></GridSplitter>
+            <StackPanel Orientation="Vertical" Grid.Row="3">
+               
+                <local:SelectorPanel x:Name="SelectorPanelControl" 
+                                 SelectorChanged="SelectorPanelControl_SelectorChanged" 
+                                     SelectorChecked="SelectorPanelControl_SelectorChecked" 
+                                     SelectorUnChecked="SelectorPanelControl_SelectorUnChecked"  ></local:SelectorPanel>
+
+               
+            </StackPanel>
+
+        </Grid>
+                
+
+        <!--<local:LoadDialog Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" x:Name="LoaderProgress" />-->
+
+
+        
+
+
+
+    </Grid>
+</Window>

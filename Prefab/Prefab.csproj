@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8F7273ED-3F04-43C1-A1C8-EB8145F1FF5F}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Prefab</RootNamespace>
+    <AssemblyName>Prefab</AssemblyName>
+    <StartupObject>Prefab.Run</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\prefab_identification_layers\</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <Commandlineparameters>AdobePreferences.png</Commandlineparameters>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="LoveSeat, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\prefab_identification_layers\LoveSeat.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>.\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnnotationUpdateUtility.cs" />
+    <Compile Include="AssemblyManager.cs" />
+    <Compile Include="LayerChain.cs" />
+    <Compile Include="LayerException.cs" />
+    <Compile Include="MutableTree.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AnnotatedNode.cs" />
+    <Compile Include="Scanner.cs" />
+    <Compile Include="Tree.cs" />
+    <Compile Include="IBoundingBox.cs" />
+    <Compile Include="BoundingBox.cs" />
+    <Compile Include="Bitmap.cs" />
+    <Compile Include="ReadOnlyDictionary.cs" />
+    <Compile Include="Layer.cs" />
+    <Compile Include="InterpretArgs.cs" />
+    <Compile Include="Properties\AnnotationArgs.cs" />
+    <Compile Include="LayerWrapper.cs" />
+    <Compile Include="AnnotationLibrary.cs" />
+    <Compile Include="ImageAnnotation.cs" />
+    <Compile Include="IRuntimeStorage.cs" />
+    <Compile Include="RuntimeStorage.cs" />
+    <Compile Include="Run.cs" />
+    <Compile Include="Point.cs" />
+    <Compile Include="CouchDbAnnotation.cs" />
+    <Compile Include="CouchDbIntentData.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

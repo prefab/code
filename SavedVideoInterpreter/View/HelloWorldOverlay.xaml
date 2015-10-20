@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="SavedVideoInterpreter.HelloWorldOverlay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SavedVideoInterpreter"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid x:Name="OverlayGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent">
+        <Image Name="BackgroundOverlay" Source="{Binding Path=BackgroundOverlayImage}" 
+               Stretch="None" Width="1" Height="1" VerticalAlignment="Top" HorizontalAlignment="Left" ></Image>
+        <ItemsControl x:Name="TextCollection" ItemsSource="{Binding Path=TextLocations}" VerticalAlignment="Top">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:TextBlockRect}">
+                    <TextBlock Width="{Binding Path=Width}" Height="{Binding Path=Height}"
+                               FontWeight="{Binding Path=FontWeight}" Foreground="{Binding Path=Color}" 
+                               FontFamily="{Binding Path=FontFamily}" FontSize="{Binding Path=FontSize}" 
+                               Padding="0" Text="{Binding Path=Text}" TextAlignment="{Binding Path=Alignment}" 
+                               TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Canvas.Top" Value="{Binding Path=Top}" />
+                    <Setter Property="Canvas.Left" Value="{Binding Path=Left}" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ItemsControl>
+    </Grid>
+</UserControl>

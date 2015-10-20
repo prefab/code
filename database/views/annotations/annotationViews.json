@@ -1,0 +1,8 @@
+{
+   "by_screenshot": {
+       "map": "function(doc) {\n  if(doc.type == 'annotation' ) {\n    emit(doc.screenshotId, doc);\n  }\n}\n"
+   },
+   "all": {
+       "map": "function(doc) {\n  if(doc.type == 'annotation' ) {\n    emit(doc._id, doc);\n  }\n}\n"
+   }
+}

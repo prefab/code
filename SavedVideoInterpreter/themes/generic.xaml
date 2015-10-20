@@ -1,0 +1,36 @@
+﻿<ResourceDictionary
+   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+   xmlns:local="clr-namespace:SavedVideoInterpreter"
+    >
+
+
+
+            <Style x:Key="TabItemFocusVisual">
+    <Setter Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate>
+          <Rectangle SnapsToDevicePixels="true" Stroke="Black" StrokeDashArray="1 2" StrokeThickness="1" Margin="3,3,3,1"/>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <SolidColorBrush x:Key="TabControlNormalBorderBrush" Color="#8C8E94"/>
+  <SolidColorBrush x:Key="TabItemHotBackground" Color="#292929" />
+  <!--<LinearGradientBrush x:Key="TabItemHotBackground" EndPoint="0,1" StartPoint="0,0">
+    <GradientStop Color="#EAF6FD" Offset="0.15"/>
+    <GradientStop Color="#D9F0FC" Offset=".5"/>
+    <GradientStop Color="#BEE6FD" Offset=".5"/>
+    <GradientStop Color="#A7D9F5" Offset="1"/>
+  </LinearGradientBrush>-->
+  <SolidColorBrush x:Key="TabItemSelectedBackground" Color="#292929"/>
+  <SolidColorBrush x:Key="TabItemHotBorderBrush" Color="#3C7FB1"/>
+  <SolidColorBrush x:Key="TabItemDisabledBackground" Color="#242424"/>
+  <SolidColorBrush x:Key="TabItemDisabledBorderBrush" Color="#FFC9C7BA"/>
+
+
+
+
+
+</ResourceDictionary>

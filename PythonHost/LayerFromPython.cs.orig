@@ -1,0 +1,257 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using System.Text.RegularExpressions;
+using IronPython.Hosting;
+using IronPython.Runtime;
+using Prefab.Prototypes;
+using Prefab.Utils;
+using System.Reflection;
+using IronPython.Runtime.Types;
+using System.Threading.Tasks;
+using Prefab.Identification;
+using Prefab.Interpretation;
+using Microsoft.Scripting;
+using Microsoft.Scripting.Hosting;
+using System.Collections;
+
+namespace PythonHost
+{
+    public class PythonTreeInterpretLogic : IInterpretLogic
+    {
+       
+        private static readonly string _interpret = "interpret";
+<<<<<<< HEAD
+=======
+        private static readonly string _extends = "extends";
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+        private static readonly string _processannotations = "process_annotations";
+
+        private ScriptScope _scope;
+        private PythonInterpretArgs _scriptArgs;
+        private PythonAnnotatedNodeArgs _annotionArgs;
+        private dynamic _interpretFunc;
+        private dynamic _processAnnotationsFunc;
+
+        private string _id;
+
+<<<<<<< HEAD
+        public PythonLayerSpec(PythonScriptHost python, string code, string filename){
+        
+            
+            _scope = python.CreateScriptSource(code);
+           
+
+
+
+            string[] codeWithoutWhitespace = code.Split(new char[] { ' ', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string alltokens = "";
+
+            foreach (string token in codeWithoutWhitespace)
+            {
+                alltokens += token;
+            }
+            _id = alltokens.GetHashCode().ToString();
+            _name = filename;
+
+
+=======
+        public string ExtendingLayer
+        {
+            get;
+            private set;
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+        }
+
+        public void ProcessAnnotatedNodes(AnnotatedNodesArgs args)
+        {
+            if (_processAnnotationsFunc != null)
+            {
+                _annotionArgs.Args = args;
+                _processAnnotationsFunc(_annotionArgs);
+            }
+            else
+            {
+                DefaultInterpretLogic.ProcessAnnotatedNodes(args);
+            }
+        }
+<<<<<<< HEAD
+        public IEnumerable<string> GetAnnotationLibraries(IDictionary<string,string> parameters)
+        {
+            if (_scope.ContainsVariable(_annotationLibraries))
+            {
+                dynamic annotationLibrariesFunc = _scope.GetVariable(_annotationLibraries);
+
+                if (annotationLibrariesFunc != null)
+                {
+                    List list = annotationLibrariesFunc(parameters);
+                    return list.Cast<string>();
+                }
+            }
+            return null;
+        }
+
+
+
+        public ChildLayerWithParameters GetChildFilename(bool left, IDictionary<string,string> parentParameters)
+        {
+            string leftOrRight = _right;
+            if (left)
+                leftOrRight = _left;
+
+            if (_scope.ContainsVariable(leftOrRight))
+            {
+                dynamic getChildFunc = _scope.GetVariable(leftOrRight);
+                PythonTuple childpython = getChildFunc(parentParameters);
+                string name = childpython[0].ToString();
+                IDictionary pythonparameters = childpython[1] as IDictionary;
+                Dictionary<string, string> parameters = new Dictionary<string, string>();
+                foreach (string key in pythonparameters.Keys)
+                {
+                    parameters.Add(key, pythonparameters[key].ToString());
+                }
+                ChildLayerWithParameters child = new ChildLayerWithParameters(name, parameters);
+                return child;
+            }
+
+            return null;
+        }
+
+        public class ChildLayerWithParameters
+        {
+
+            public ChildLayerWithParameters(string name, IDictionary<string, string> parameters)
+            {
+                Name = name;
+                Parameters = parameters;
+            }
+
+            public string Name
+            {
+                get;
+                private set;
+            }
+
+            public IDictionary<string, string> Parameters
+            {
+                get;
+                private set;
+            }
+        }
+
+        private class PythonInterpretLogic : IInterpretLogic
+=======
+
+
+        public PythonTreeInterpretLogic(PythonScriptHost python, string code)
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+        {
+            _scope = python.CreateScriptSource(code);
+            _scriptArgs = new PythonInterpretArgs();
+            _annotionArgs = new PythonAnnotatedNodeArgs();
+
+            if (_scope.ContainsVariable(_processannotations))
+            {
+                _processAnnotationsFunc = _scope.GetVariable(_processannotations);
+            }
+
+            if (_scope.ContainsVariable(_interpret))
+            {
+                _interpretFunc = _scope.GetVariable(_interpret);
+            }
+
+            if (_scope.ContainsVariable(_extends))
+            {
+<<<<<<< HEAD
+                _scriptArgs = new PythonInterpretArgs();
+                _interpretFunc = interpretFunc;
+                _scope = scope;
+                _id = id;
+                Name = name;
+=======
+                dynamic extends = _scope.GetVariable(_extends);
+                ExtendingLayer = extends();
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+            }
+
+            string[] codeWithoutWhitespace = code.Split(new char[] { ' ', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string alltokens = "";
+            
+            foreach (string token in codeWithoutWhitespace)
+            {
+<<<<<<< HEAD
+                _scriptArgs.prefab_output = args.OuputFromPrefab;
+                _scriptArgs.parameters = args.Layer.Parameters;
+                _scriptArgs.root = args.Tree;
+                _scriptArgs.modifier = args.Updater;
+                _scriptArgs.saved_data = args.Layer.RuntimeData;
+                _scriptArgs.annotation_libraries = args.Layer.Annotations;
+                _scriptArgs.annotations_to_add = args.AnnotationsToAdd;
+
+                if (_interpretFunc != null)
+                    _scope.Engine.Operations.Invoke(_interpretFunc, _scriptArgs);
+                //else
+                //    ExactMatchTaggingLogic.Interpret(args, Name);
+=======
+                alltokens += token;
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+            }
+
+            _id = alltokens.GetHashCode().ToString();
+        }
+
+        public void Interpret(LayerArgs args)
+        {
+<<<<<<< HEAD
+            private PythonAnnotatedNodeArgs _annotationArgs;
+            private ScriptScope _scope;
+            private dynamic _processAnnotationsFunc;
+            private string _id;
+
+            public string GetId()
+            {
+                return _id;
+            }
+
+            public PythonAnnotationProcessLogic(dynamic processAnnotationsFunc, ScriptScope scope, string id)
+            {
+                _scope = scope;
+                _processAnnotationsFunc = processAnnotationsFunc;
+                _annotationArgs = new PythonAnnotatedNodeArgs();
+                _id = id;
+            }
+
+            public void ProcessAnnotatedNodes(AnnotatedNodesArgs args)
+            {
+                if (_processAnnotationsFunc != null)
+                {
+                    _annotationArgs.Args = args;
+                    _processAnnotationsFunc(_annotationArgs);
+                }
+                //else
+                //{
+                //    ExactMatchTaggingLogic.ProcessAnnotatedNodes(args);
+                //}
+            }
+=======
+            _scriptArgs.prefab_output = args.OuputFromPrefab;
+            _scriptArgs.root = args.Tree;
+            _scriptArgs.modifier = args.Updater;
+            _scriptArgs.saved_data = args.RuntimeData;
+
+            if (_interpretFunc != null)
+                _scope.Engine.Operations.Invoke(_interpretFunc, _scriptArgs);
+            else
+                DefaultInterpretLogic.Interpret(args);
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+        }
+
+        public string GetId()
+        {
+            return _id;
+        }
+    }
+    
+}

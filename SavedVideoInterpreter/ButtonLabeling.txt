@@ -1,0 +1,41 @@
+
+{
+  "name" : "ButtonLabeling",
+  "layers" : [
+    {
+      "name" : "is_button_layer",
+      "parameters" : [
+        {
+          "key" : "library",
+          "value" : "button_db"
+        }
+      ],
+      "code-file"  : "exactmatch.py"
+    },
+    {
+      "name" : "animation_correction",
+      "parameters" : [
+      ],
+      "code-file"  : "animation_correction.py"
+    },
+    {
+      "name" : "is_checkbox_layer",
+      "parameters" : [
+        {
+          "key" : "library",
+          "value" : "is_checkbox_db"
+        }
+      ],
+      "code-file"  : "exactmatch.py"
+    },
+    {
+      "name" : "text_group",
+      "parameters" : [
+      ],
+      "code-file"  : "text_group.py"
+    }
+  ],
+  "utils"  : [
+    "path_utils.py"
+  ]
+}

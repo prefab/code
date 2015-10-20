@@ -1,0 +1,115 @@
+﻿<UserControl x:Class="SavedVideoInterpreter.RectangleViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             xmlns:local="clr-namespace:SavedVideoInterpreter"
+>
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <DataTemplate x:Key="ItemTemplate" DataType="{x:Type local:SelectableBoundingBox+WithTreeNode}">
+            <Grid>
+                <Rectangle MouseDown="NonEditableRectangle_MouseDown" StrokeThickness="2" Opacity="0.75">
+                <Rectangle.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                                <Setter Property="Rectangle.Fill" Value="{Binding Path=SelectedColor}"/>
+                                <Setter Property="Rectangle.Stroke" Value="Black"/>   
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsSelected}" Value="False">
+                                <Setter Property="Rectangle.Fill" Value="{Binding Path=Color}"/>
+                                <Setter Property="Rectangle.Stroke" Value="Black"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+                <!-- <Button Visibility="{Binding Path=IsSelected,Converter={StaticResource BoolToVis}}" 
+                        Click="CloseTruePositive_Click"  BorderBrush="DarkGray" Background="LightGray" HorizontalAlignment="Left" 
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        VerticalAlignment="Top" Height="13" Width="13" FontSize="8" Margin="-5,-5,0,0" Padding="0,0,0,0">
+                    
+                    
+                        <TextBlock Margin="0,-2,0,0" TextAlignment="Center">x</TextBlock> 
+                        
+                </Button>-->
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FalsePositiveItemTemplate" DataType="{x:Type local:SelectableBoundingBox}">
+            <Grid>
+                
+            <Rectangle  MouseDown="NonEditableRectangle_MouseDown" StrokeThickness="2" Opacity="0.75">
+                <Rectangle.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                                <Setter Property="Rectangle.Fill" Value="Red"/>
+                                <Setter Property="Rectangle.Stroke" Value="DarkRed"/>
+                                
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsSelected}" Value="False">
+                                <Setter Property="Rectangle.Fill" Value="Red"/>
+                                <Setter Property="Rectangle.Stroke" Value="Red"/>
+                                
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+                <Button Visibility="{Binding Path=IsSelected,Converter={StaticResource BoolToVis}}" 
+                        Click="CloseFalsePositive_Click" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" BorderBrush="DarkGray" Background="LightGray" HorizontalAlignment="Left" 
+                        VerticalAlignment="Top" Height="13" Width="13" FontSize="8" Margin="-5,-5,0,0" Padding="0,0,0,0">
+                    <TextBlock Margin="0,-2,0,0" TextAlignment="Center">x</TextBlock>
+                </Button>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DrawnItemTemplate" DataType="{x:Type local:SelectableBoundingBox}">
+            <Grid>
+                <Rectangle  MouseDown="Rectangle_MouseDown" MouseLeave="Rectangle_MouseLeave" 
+                            MouseMove="Rectangle_MouseMove" MouseUp="Rectangle_MouseUp"
+                            
+                            StrokeThickness="2"  Opacity="0.75">
+                <Rectangle.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                                    <Setter Property="Rectangle.Fill" Value="{Binding Path=Color}"/>
+                                    <Setter Property="Rectangle.Stroke" Value="Black"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsSelected}" Value="False">
+                                    <Setter Property="Rectangle.Fill" Value="{Binding Path=Color}"/>
+                                    <Setter Property="Rectangle.Stroke" Value="{Binding Path=Color}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+                <Button Visibility="{Binding Path=IsSelected,Converter={StaticResource BoolToVis}}" Click="CloseRectButton_Click" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" BorderBrush="DarkGray" Background="LightGray" HorizontalAlignment="Left" 
+                        VerticalAlignment="Top" Height="13" Width="13" FontSize="8" Margin="-5,-5,0,0" Padding="0,0,0,0">
+                <TextBlock Margin="0,-2,0,0" TextAlignment="Center">x</TextBlock>
+            </Button>
+            </Grid>
+        </DataTemplate>
+        
+        <Style TargetType="ContentPresenter" x:Key="ContainerStyle">
+            <Setter Property="Canvas.Top" Value="{Binding Path=TopOffset}" />
+            <Setter Property="Canvas.Left" Value="{Binding Path=LeftOffset}" />
+            <Setter Property="Width" Value="{Binding Path=Width}" />
+            <Setter Property="Height" Value="{Binding Path=Height}" />
+        </Style>
+
+        <ItemsPanelTemplate x:Key="PanelTemplate">
+            <Canvas />
+        </ItemsPanelTemplate>
+    </UserControl.Resources>
+    <ItemsControl x:Name="RectangleListBox"  BorderThickness="0"
+                ItemsSource="{Binding Path=Rectangles}"
+                ItemContainerStyle="{StaticResource ContainerStyle}"
+                ItemsPanel="{StaticResource PanelTemplate}">
+    </ItemsControl>
+</UserControl>

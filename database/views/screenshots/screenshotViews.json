@@ -1,0 +1,5 @@
+{
+   "all": {
+       "map": "function(doc) {\n  if(doc.type == 'screenshot' ) {\n    emit(doc._id, doc);\n  }\n}\n"
+   }
+}

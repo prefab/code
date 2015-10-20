@@ -1,0 +1,246 @@
+﻿<UserControl x:Class="SavedVideoInterpreter.PrototypeBrowser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:SavedVideoInterpreter" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        SnapsToDevicePixels="True"
+             
+             RenderOptions.BitmapScalingMode="NearestNeighbor"
+        Name="PtypeViewer" DataContext="{Binding ElementName=PtypeViewer}" 
+             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+       >
+
+
+
+
+<UserControl.Resources>
+        <local:FilePathConverter x:Key="pathConverter" />
+        <local:PtypeToVisualConverter x:Key="ptypeConverter" />
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        
+        <ItemsPanelTemplate x:Key="HorizontalTemplate">
+            <StackPanel Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+
+
+        <DataTemplate x:Key="ExampleTemplate" DataType="{x:Type local:Example}">
+            <StackPanel Orientation="Horizontal">
+
+                <StackPanel Orientation="Vertical">
+            <Border BorderThickness="3" Margin="5" Background="White"  MaxHeight="200" MaxWidth="200">
+                <Border.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsAsync=True, Path=IsSelected}" Value="True">
+                                <Setter Property="Border.BorderBrush" Value="Green"/>
+
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsAsync=True, Path=IsSelected}" Value="False">
+                                <Setter Property="Border.BorderBrush" Value="#84bd68"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                    <StackPanel Orientation="Vertical">
+                <Image Stretch="Uniform" 
+                       Source="{Binding IsAsync=True, Path=Img}"
+                 />
+
+                    </StackPanel>
+                </Border>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Delete Example" Click="DeleteExample_Click"></Button>
+                </StackPanel>
+                </StackPanel>
+                <Button Visibility="{Binding IsAsync=True, Path=IsSelected, Converter={StaticResource BoolToVis}}"  
+                        BorderBrush="DarkGray" Background="LightGray" HorizontalAlignment="Left" 
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        VerticalAlignment="Top" Height="13" Width="13" FontSize="8"
+                         Margin="-13,5,0,0" Padding="0,0,0,0">
+
+                    <TextBlock Margin="0,-2,0,0" TextAlignment="Center">x</TextBlock>
+
+                </Button>
+            </StackPanel>
+                
+        </DataTemplate>
+
+        <DataTemplate x:Key="NegativeExampleTemplate" DataType="{x:Type local:Example}">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Vertical">
+                <Border BorderThickness="3" Margin="5" Background="White" MaxWidth="200"  MaxHeight="200">
+                    <Border.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsAsync=True, Path=IsSelected}" Value="True">
+                                    <Setter Property="Border.BorderBrush" Value="DarkRed"/>
+
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsAsync=True, Path=IsSelected}" Value="False">
+                                    <Setter Property="Border.BorderBrush" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel Orientation="Vertical">
+                    <Image Stretch="Uniform" 
+                       Source="{Binding IsAsync=True, Path=Img}"
+                       />
+     
+                    </StackPanel>
+                    
+                </Border>
+                <StackPanel Orientation="Horizontal">
+                    <Button Name="DeleteNegativeExampleButton" Content="Delete Example" Click="DeleteNegativeExample_Click"></Button>
+                </StackPanel>
+                </StackPanel>
+                <Button Visibility="{Binding IsAsync=True, Path=IsSelected, Converter={StaticResource BoolToVis}}"  
+                        BorderBrush="DarkGray" Background="LightGray" HorizontalAlignment="Left" 
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        VerticalAlignment="Top" Height="13" Width="13" FontSize="8"
+                         Margin="-13,5,0,0" Padding="0,0,0,0">
+
+                    <TextBlock Margin="0,-2,0,0" TextAlignment="Center">x</TextBlock>
+
+                </Button>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PrototypeItemTemplate" DataType="{x:Type local:ViewablePrototypeItem}" >
+            <Border BorderBrush="LightGray" BorderThickness="1">
+            <StackPanel Orientation="Horizontal">
+                    <StackPanel.ContextMenu>
+                        
+                            <ContextMenu>
+                                <MenuItem Header="Delete Prototype" Click="MenuItem_Click_1" />
+                            <MenuItem Header="Add Positive Example" Click="AddPositiveExample_Click" />
+                        </ContextMenu>
+                        
+                    </StackPanel.ContextMenu>
+
+                
+                        <Border BorderThickness="1" Margin="5" Width="240" Height="240" Background="White" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Border.Style>
+                        <Style>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsAsync=True, Path=IsSelected}" Value="True">
+                                    <Setter Property="Border.BorderBrush" Value="DarkBlue"/>
+
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsAsync=True, Path=IsSelected}" Value="False">
+                                    <Setter Property="Border.BorderBrush" Value="DarkGray"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                        <StackPanel Orientation="Vertical">
+                            
+                            
+                            <ContentControl Height="170" Content="{Binding IsAsync=True, Path=PrototypeVisual,Converter={StaticResource ptypeConverter}}">
+                            </ContentControl>
+                            
+                            <TextBox Text="{Binding Path=Guid, Mode=OneWay}" BorderThickness="0" IsReadOnly="True" Margin="5"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Button  Margin="3" Content="Delete Prototype" Name="DeletePtypeButton" Click="DeletePtypeButton_Click"></Button>
+                                <Button Margin="3" Content="Add Positive Example" Name="AddPositiveButton" Click="AddPositiveButton_Click"></Button>
+                            </StackPanel>
+                        </StackPanel>
+
+                    </Border>
+
+
+                    <Button Visibility="{Binding IsAsync=True, Path=IsSelected, Converter={StaticResource BoolToVis}}"  
+                        BorderBrush="DarkGray" Background="LightGray" HorizontalAlignment="Left" 
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                        VerticalAlignment="Top" Height="13" Width="13" FontSize="8" Margin="-13,5,-8,-8" Padding="0,0,0,0">
+
+                        <TextBlock Margin="0,-2,0,0" TextAlignment="Center">x</TextBlock>
+
+                    </Button>
+
+
+                    <ItemsControl ItemsSource="{Binding IsAsync=True, Path=PositiveExamples}"
+                              ItemsPanel="{StaticResource HorizontalTemplate}"
+                              ItemTemplate="{StaticResource ExampleTemplate}"
+                              >
+
+                </ItemsControl>
+                <ItemsControl ItemsSource="{Binding IsAsync=True, Path=NegativeExamples}"
+                              ItemsPanel="{StaticResource HorizontalTemplate}"
+                              ItemTemplate="{StaticResource NegativeExampleTemplate}"
+                              >
+                 
+                </ItemsControl>
+                
+            </StackPanel>
+            </Border>
+        </DataTemplate>
+        
+    </UserControl.Resources>
+
+    
+    
+    <TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <!--<TabItem Header="Selected"  >
+            <ItemsControl Name="SelectedItems"
+                          VirtualizingStackPanel.IsVirtualizing="True"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+                          ScrollViewer.CanContentScroll="True"
+                          ItemsSource="{Binding IsAsync=True, Path=SelectedPrototypes}"
+                          ItemTemplate="{StaticResource PrototypeItemTemplate}"
+                          >
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel HorizontalAlignment="Stretch" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Template>
+                    <ControlTemplate>
+                        <Border
+            BorderThickness="{TemplateBinding Border.BorderThickness}"
+            Padding="{TemplateBinding Control.Padding}"
+            BorderBrush="{TemplateBinding Border.BorderBrush}"
+            Background="{TemplateBinding Panel.Background}"
+            SnapsToDevicePixels="True">
+                                <ItemsPresenter
+                        SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                        </Border>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+            </ItemsControl>
+        </TabItem>-->
+        <TabItem Header="All" >
+            <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <ItemsControl Name="Items"
+    VirtualizingStackPanel.IsVirtualizing="True"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling"
+    ScrollViewer.CanContentScroll="True"
+                         
+    ItemsSource="{Binding IsAsync=True, Path=PrototypeItems}" ItemTemplate="{StaticResource PrototypeItemTemplate}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Template>
+                    <ControlTemplate>
+                        <Border
+            BorderThickness="{TemplateBinding Border.BorderThickness}"
+            Padding="{TemplateBinding Control.Padding}"
+            BorderBrush="{TemplateBinding Border.BorderBrush}"
+            Background="{TemplateBinding Panel.Background}"
+            SnapsToDevicePixels="True">
+
+                                <ItemsPresenter
+                        SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                        </Border>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+            </ItemsControl>
+    </ScrollViewer>
+        </TabItem>
+    </TabControl>
+
+</UserControl>
+

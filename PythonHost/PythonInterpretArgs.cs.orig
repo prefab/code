@@ -1,0 +1,71 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Prefab.Utils;
+using Prefab.Identification;
+using Prefab.IORedirection;
+using IronPython.Runtime;
+using Prefab.Interpretation;
+
+namespace PythonHost
+{
+    public class PythonInterpretArgs
+    {
+        public PythonInterpretArgs(){}
+
+        public IdentificationResults prefab_output
+        {
+            get;
+            internal set;
+        }
+
+        public Tree root
+        {
+            get;
+            internal set;
+        }
+
+        public IDictionary<string, string> saved_data
+        {
+            get;
+            internal set;
+        }
+
+        internal Tree.Updater modifier
+        {
+            get;
+            set;
+        }
+
+        public void set_attribute(Tree node, string value)
+        {            
+            modifier.SetAttribute(node, value);
+        }
+
+        public void insert_parent(IEnumerable<Tree> siblings)
+        {
+            modifier.InsertGroupNode(siblings);
+        }
+
+
+        public string get_path(Tree node)
+        {
+            return DefaultPathComputeLogic.GetPath(node, root);
+        }
+
+<<<<<<< HEAD
+        public Tree get_parent(Tree node)
+        {
+            return (Tree)Tree.GetParent(node, root);
+        }
+
+        public Bitmap get_pixels(Tree node)
+        {
+           return Bitmap.Crop(prefab_output.Bitmap, node);
+        }
+=======
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+
+    }
+}

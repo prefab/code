@@ -1,0 +1,173 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using PrefabDatabase;
+using System.Threading;
+using System.ComponentModel;
+using System.Collections;
+using Prefab.Interpretation;
+
+namespace SavedVideoInterpreter
+{
+    class BackgroundLayerUpdateThread
+    {
+        public event EventHandler LayersUpdated;
+        private AutoResetEvent _updateLayersRequestAdded;
+        private Queue<object> _updateLayersQueue;
+        private BackgroundWorker _updateLayers;
+        private PrefabWithDatabase _prefab;
+        public BackgroundLayerUpdateThread(PrefabWithDatabase prefab)
+        {
+            _prefab = prefab;
+            _updateLayersQueue = new Queue<object>();
+            _updateLayers = new BackgroundWorker();
+            _updateLayersRequestAdded = new AutoResetEvent(false);
+            _updateLayers.DoWork += new DoWorkEventHandler(_updateLayers_DoWork);
+            _updateLayers.RunWorkerAsync();
+        }
+
+
+        private class ImmutableLayerInfo
+        {
+            public string Name
+            {
+                get;
+                private set;
+            }
+
+            public string DatabaseId
+            {
+                get;
+                private set;
+            }
+
+
+            public string Code
+            {
+                get;
+                private set;
+            }
+
+            private ImmutableLayerInfo(string name, string id, string code)
+            {
+                Name = name;
+                DatabaseId = id;
+
+                Code = code;
+            }
+
+            public static ImmutableLayerInfo CopyFromMutable(LayerInfo info)
+            {
+                return new ImmutableLayerInfo(info.Name.Value, info.DatabaseId, info.Code);
+            }
+        }
+
+        void _updateLayers_DoWork(object sender, DoWorkEventArgs e)
+        {
+            while (true)
+            {
+                if (_updateLayersRequestAdded.WaitOne())
+                {
+<<<<<<< HEAD
+                    Tuple<LayerInfo, IEnumerable<LayerInfo>, IDictionary<string,string>, string> layers = null;// default(Tuple<LayerInfo, IEnumerable<LayerInfo>>);
+=======
+                    IEnumerable<ImmutableLayerInfo> layers = null;
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+                    lock (((ICollection)_updateLayersQueue).SyncRoot)
+                    {
+                        while (_updateLayersQueue.Count > 0)
+                        {
+<<<<<<< HEAD
+                            layers = _updateLayersQueue.Dequeue() as Tuple<LayerInfo, IEnumerable<LayerInfo>, IDictionary<string,string>, string>;
+                        }
+                    }
+
+                    ResetLayersAsync(layers.Item1, layers.Item2, layers.Item3, layers.Item4);
+=======
+                            layers = _updateLayersQueue.Dequeue() as IEnumerable<ImmutableLayerInfo>;
+                        }
+                    }
+
+                    ResetLayersAsync(layers);
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+                }
+            }
+        }
+
+        public void ResetLayers(PrefabSolution soln)
+        {
+            List<ImmutableLayerInfo> layersCopy = new List<ImmutableLayerInfo>();
+            foreach (LayerInfo info in soln.LayersFiles)
+            {
+                ImmutableLayerInfo layer = ImmutableLayerInfo.CopyFromMutable(info);
+                layersCopy.Add(layer);
+            }
+            
+            lock (((ICollection)_updateLayersQueue).SyncRoot)
+            {
+<<<<<<< HEAD
+                _updateLayersQueue.Enqueue(new Tuple<LayerInfo, IEnumerable<LayerInfo>, IDictionary<string,string>, string>(layer, all, soln.RootParameters, soln.WorkingDirectory));
+=======
+                _updateLayersQueue.Enqueue(layersCopy);
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+                _updateLayersRequestAdded.Set();
+            }
+        }
+
+<<<<<<< HEAD
+        private void ResetLayersAsync(LayerInfo rootLayerInfo, IEnumerable<LayerInfo> all, IDictionary<string,string> rootparams, string workingDirectory)
+=======
+        private void ResetLayersAsync(IEnumerable<ImmutableLayerInfo> layerCode)
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+        {
+            List<Layer> layers = new List<Layer>();
+            UnhandledExceptionEventArgs error = null;
+            ImmutableLayerInfo currLayer = null;
+
+            Dictionary<string, string> annotationIds = new Dictionary<string, string>();
+
+            foreach (ImmutableLayerInfo layer in layerCode)
+                annotationIds[layer.Name] = layer.DatabaseId;
+
+            try
+            {
+<<<<<<< HEAD
+                if (rootLayerInfo != null)
+                    rootLayer = _prefab.CreatePythonLayerHierarchy(rootLayerInfo, all, rootparams, workingDirectory);
+=======
+                foreach (ImmutableLayerInfo layer in layerCode)
+                {
+                    currLayer = layer;
+                    layers.Add(_prefab.CreatePythonLayer(layer.Name, layer.Code, annotationIds));
+                }
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+            }
+            catch(Exception e)
+            {
+                layers.Clear();
+                Exception wrapper = new Exception(currLayer.Name, e);
+                error = new UnhandledExceptionEventArgs(wrapper, false);
+            }
+
+
+            _prefab.SetLayers(layers);
+
+            try
+            {
+                _prefab.UpdateInvalidatedLayers();
+            }
+            catch(Exception e)
+            {
+                layers.Clear();
+                Exception wrapper = new Exception(currLayer.Name, e);
+                error = new UnhandledExceptionEventArgs(wrapper, false);
+            }
+
+            if (LayersUpdated != null)
+                LayersUpdated(this, error);
+        }
+        
+
+    }
+}

@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="SavedVideoInterpreter.AnnotationGridView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" x:Name="AnnotationThumbView">
+    <UserControl.Resources>
+        <ItemsPanelTemplate x:Key="WrapTemplate">
+            <ListBox  ScrollViewer.CanContentScroll="True" BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" >                
+            </ListBox>
+        </ItemsPanelTemplate>
+        
+        <DataTemplate x:Key="ScreenshotTemplate" DataType="{x:Type BitmapSource}">
+
+
+            <Image Source="{Binding}" Margin="4" MaxHeight="120" />
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <ListBox Name="ListBoxView" Height="160" ScrollViewer.CanContentScroll="True" BorderThickness="0"
+                 Background="Transparent" SelectionChanged="ListBox_SelectionChanged" 
+                 SelectedIndex="{Binding Path=SelectedIndex, Mode=TwoWay}" 
+                 VerticalAlignment="Stretch" 
+                 VirtualizingStackPanel.VirtualizationMode="Recycling" 
+                 VirtualizingStackPanel.IsVirtualizing="True"  
+                 ScrollViewer.IsDeferredScrollingEnabled="True" 
+                 ItemsSource="{Binding Path=Screenshots}" ItemTemplate="{StaticResource ScreenshotTemplate}"  >
+
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel  Orientation="Horizontal" ScrollViewer.CanContentScroll="True"
+                               Background="Transparent" VerticalAlignment="Stretch"   VirtualizingStackPanel.IsVirtualizing="True"   
+                               ScrollViewer.IsDeferredScrollingEnabled="True" VirtualizingStackPanel.VirtualizationMode="Recycling"  IsItemsHost="True"></VirtualizingStackPanel>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+    </Grid>
+</UserControl>

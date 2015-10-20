@@ -1,0 +1,18 @@
+﻿<Window x:Class="SavedVideoInterpreter.StudyDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="StudyDialog" Height="150" Width="250" Name="StudyDialogWindow">
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="Participant ID" VerticalAlignment="Center"></Label>
+            <TextBox Name="ParticipantIdField" Text="-1" Width="20" VerticalAlignment="Center" Margin="10"></TextBox>
+            <ComboBox x:Name="StudyTypeBox" Text="Condition" Height="20" Width="100" IsEditable="True" Margin="10">
+                <ComboBoxItem x:Name="LayersItem" Content="Layers" />
+                <ComboBoxItem x:Name="ControlItem" Content="Single" />
+                <ComboBoxItem x:Name="HelloWorldItem" Content="Hello World"></ComboBoxItem>
+            </ComboBox>
+        </StackPanel>
+        <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Continue" Margin="10" IsDefault="True" Click="Continue_Click"></Button>
+        <Button HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="Debug" Margin="10" IsCancel="False" Click="Cancel_Click"></Button>
+    </Grid>
+</Window>

@@ -1,0 +1,33 @@
+﻿<Window x:Class="ScreenVideoCapture.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525"
+        Loaded="Window_Loaded" Topmost="True">
+    <Grid>
+        <ToggleButton 
+            Name="RecordButton" 
+            IsEnabled="False" 
+            Width="100" 
+            Height="50" 
+            Content="Record" 
+            Checked="ToggleButton_Checked" 
+            Unchecked="ToggleButton_Unchecked"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Right"></ToggleButton>
+        
+        <Button Name="SelectAWindowButton"
+                      Width="160"
+                      Height="50"
+                      Content="Select a Window to Record"
+                        VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                Click="SelectAWindowButton_Click"
+                      ></Button>
+        
+        
+        <CheckBox Name="UsePrintWindow" Content="Use Print Window" HorizontalAlignment="Center" 
+                  VerticalAlignment="Bottom" Checked="UsePrintWindow_Checked_1" 
+                  Unchecked="UsePrintWindow_Unchecked_1" IsChecked="True"></CheckBox>
+        
+    </Grid>
+</Window>

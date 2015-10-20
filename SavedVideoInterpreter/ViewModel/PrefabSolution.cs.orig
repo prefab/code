@@ -1,0 +1,224 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using LitJson;
+using System.IO;
+using System.Windows;
+using System.ComponentModel;
+<<<<<<< HEAD
+using System.Text.RegularExpressions;
+using System.Collections;
+=======
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+namespace SavedVideoInterpreter
+{
+    public class PrefabSolution : DependencyObject
+    {
+
+        public static readonly DependencyProperty NameProperty = 
+            DependencyProperty.Register("Name", typeof(DependencyString), typeof(PrefabSolution));
+        public static readonly DependencyProperty LayersProperty = 
+            DependencyProperty.Register("LayersFiles", typeof(BindingList<LayerInfo>), typeof(PrefabSolution));
+        public static readonly DependencyProperty IsSelectedProperty =
+            DependencyProperty.Register("IsSelected", typeof(bool), typeof(PrefabSolution));
+
+
+
+        public bool IsSelected
+        {
+            get { return (bool)GetValue(IsSelectedProperty); }
+            set { SetValue(IsSelectedProperty, value); }
+        }
+
+
+
+        public DependencyString Name
+        {
+            get { return (DependencyString)GetValue(NameProperty); }
+            set { SetValue(NameProperty, value); }
+        }
+
+        public BindingList<LayerInfo> LayersFiles
+        {
+            get { return (BindingList<LayerInfo>)GetValue(LayersProperty); }
+            set
+            {
+                SetValue(LayersProperty, value);
+            }
+        }
+
+
+<<<<<<< HEAD
+        public BindingList<DependencyString> OtherScripts
+        {
+            get { return (BindingList<DependencyString>)GetValue(OtherScriptsProperty); }
+            set
+            {
+                SetValue(OtherScriptsProperty, value);
+            }
+        }
+
+        public string WorkingDirectory
+        {
+            get;
+            set;
+        }
+
+        public ViewableLayerInfo RootLayer
+        {
+            get;
+            set;
+        }
+
+        public IDictionary<string, string> RootParameters
+        {
+            get;
+            set;
+        }
+
+=======
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+
+        public PrefabSolution()
+        {
+            Name = new DependencyString("New Project");
+            LayersFiles = new BindingList<LayerInfo>();
+
+
+
+        }
+
+        
+
+        public PrefabSolution(string name, IEnumerable<LayerInfo> layers)
+        {
+            Name = new DependencyString(name);
+            LayersFiles = new BindingList<LayerInfo>();
+            
+            foreach (LayerInfo info in layers)
+                LayersFiles.Add(info);
+        }
+
+        public static void Save(PrefabSolution soln, string location)
+        {
+            TextWriter tw = new StreamWriter(location);
+            JsonWriter writer = new JsonWriter(tw);
+            
+            writer.IndentValue = 2;
+            writer.PrettyPrint = true;
+            
+            JsonData jsonsoln = new JsonData();
+            jsonsoln["name"] = soln.Name.Value;
+
+            JsonData layers = new JsonData();
+
+
+            foreach (LayerInfo layer in soln.LayersFiles)
+            {
+                JsonData layerdata = new JsonData();
+                layerdata["name"] = layer.Name.Value;
+                layerdata["databaseid"] =  layer.DatabaseId.ToString();
+                layers.Add(layerdata);
+            }
+
+            jsonsoln["layers"] = layers;
+
+            
+
+            if (soln.RootParameters != null && soln.RootParameters.Count > 0)
+            {
+                jsonsoln["rootparameters"] = new JsonData();
+                foreach (string key in soln.RootParameters.Keys)
+                {
+                    jsonsoln["rootparameters"][key] = soln.RootParameters[key];
+                }
+            }
+
+            jsonsoln.ToJson(writer);
+            tw.Close();
+
+            
+        }
+
+        public static PrefabSolution Load(string location)
+        {
+            TextReader tr = new StreamReader(location);
+            JsonReader reader = new JsonReader(tr);
+
+            JsonData jsonsoln = JsonMapper.ToObject(reader);
+
+            string name = jsonsoln["name"].ToString();
+
+            List<LayerInfo> layers = new List<LayerInfo>();
+            foreach (JsonData layer in jsonsoln["layers"])
+            {
+                string layername = layer["name"].ToString();
+<<<<<<< HEAD
+                
+                ViewableLayerInfo info = new ViewableLayerInfo(layername);
+=======
+                string layerdatabaseid = layer["databaseid"].ToString();
+                LayerInfo info = new LayerInfo(layername,  layerdatabaseid);
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+
+
+                string directory = System.IO.Path.GetDirectoryName(location);
+                string code = File.ReadAllText(directory + "\\" + layername + ".py");
+                info.Code = code;
+
+                layers.Add(info);
+            }
+
+<<<<<<< HEAD
+            string rootname = "";
+            try
+            {
+                rootname = jsonsoln["root"].ToString();
+            }
+            catch
+            {
+
+            }
+
+
+            Dictionary<string, string> rootparameters = new Dictionary<string, string>();
+
+            try
+            {
+                JsonData rootparamjson = jsonsoln["rootparameters"];
+                IDictionary dict = rootparamjson as IDictionary;
+                foreach (DictionaryEntry parameter in dict)
+                {
+                    rootparameters.Add((string)parameter.Key, (string)parameter.Value);
+                }
+            }
+            catch { }
+
+
+            ViewableLayerInfo root = null;
+
+            if (!rootname.Equals(""))
+            {
+               root =  layers.First((l) => l.Name.Value.Equals(rootname));
+            }
+            else if (layers.Count > 0)
+            {
+                root = layers.First();
+            }
+
+
+            PrefabSolution soln = new PrefabSolution(name, layers);
+            soln.RootLayer = root;
+            soln.RootParameters = rootparameters;
+            soln.WorkingDirectory = Path.GetDirectoryName(location);
+
+            return soln;
+=======
+            return new PrefabSolution(name, layers);
+>>>>>>> parent of 0426de9... layers are now arranged as binary trees
+        }
+
+
+    }
+}

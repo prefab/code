@@ -1,0 +1,4 @@
+feature_detection library=ptypes_layers_user_study
+prototype_detection
+content_detection
+feature_cleanup

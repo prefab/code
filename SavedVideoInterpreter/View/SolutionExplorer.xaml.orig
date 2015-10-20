@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="SavedVideoInterpreter.SolutionExplorer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SavedVideoInterpreter"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+
+
+        <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsSelected" Value="{Binding Path=Name.IsSelected}"/>
+
+
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="White" />
+            </Style.Resources>
+
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderBrush" Value="#FF7DA2CE" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="Background" Value="Transparent" />
+                </Trigger>
+            </Style.Triggers>
+
+        </Style>
+
+
+        <DataTemplate x:Key="InnerNodeTemplate" DataType="PrefabSolution+DependencyString">
+            <local:EditableTextBlock Text="{Binding Path=Value, Mode=TwoWay}" IsInEditMode="{Binding Path=IsEditing, Mode=TwoWay}"
+                                     Foreground="White" Background="Transparent"
+                                     MouseLeftButtonDown="Treeview_Mousedown"
+                                     >
+            </local:EditableTextBlock>
+        </DataTemplate>
+
+        <HierarchicalDataTemplate x:Key="LayerTemplate" DataType="LayerInfo">
+            <TreeViewItem Background="Transparent" IsExpanded="True" Header="{Binding Path=Name}" 
+                          IsSelected="{Binding Path=Name.IsSelected, Mode=TwoWay}"
+                          PreviewMouseDoubleClick="TreeViewItem_MouseDoubleClick" MouseUp="TreeViewItem_MouseUp"
+                          MouseMove="Treeview_Mousemove" Drop="Treeview_Drop"
+                          AllowDrop="True"
+                          HeaderTemplate="{StaticResource InnerNodeTemplate}">
+                <TreeViewItem.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Remove" Click="ContextMenu_RemoveItemClick" />
+                    </ContextMenu>
+                </TreeViewItem.ContextMenu>
+            </TreeViewItem>
+
+        </HierarchicalDataTemplate>
+
+        <DataTemplate x:Key="RootTemplate" DataType="PrefabSolution+DependencyString">
+            <local:EditableTextBlock Text="{Binding Path=Value, Mode=TwoWay}" IsInEditMode="{Binding Path=IsEditing, Mode=TwoWay}"
+                                         Foreground="#8ac6f2" Background="Transparent"
+                                         >
+            </local:EditableTextBlock>
+        </DataTemplate>
+        
+        <HierarchicalDataTemplate x:Key="SolutionItem" DataType="local:PrefabSolution" >
+            <TreeViewItem Background="Transparent" IsExpanded="True" Header="{Binding Path=Name}"
+                          IsSelected="{Binding Path=IsSelected, Mode=TwoWay}"
+                          HeaderTemplate="{StaticResource RootTemplate}"
+                          ItemsSource="{Binding Path=LayersFiles}" ItemContainerStyle="{StaticResource TreeViewItemStyle}"
+                          ItemTemplate="{StaticResource LayerTemplate}" MouseUp="TreeViewItem_MouseUp" >
+            </TreeViewItem>
+        </HierarchicalDataTemplate>
+    </UserControl.Resources>
+    
+    <TreeView Name="SolutionTreeViewControl" BorderThickness="0"  Background="Transparent" Foreground="White" 
+              ItemsSource="{Binding Path=Solutions}" ItemTemplate="{StaticResource SolutionItem}" AllowDrop="True" >
+
+        <TreeView.ItemContainerStyle>
+            <Style TargetType="{x:Type TreeViewItem}">
+                <Setter Property="IsSelected" Value="{Binding Path=IsSelected}"/>
+                <Style.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="White" />
+                </Style.Resources>
+
+                
+            </Style>
+        </TreeView.ItemContainerStyle>
+    </TreeView>
+</UserControl>

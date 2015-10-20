@@ -1,0 +1,11 @@
+﻿<Window x:Class="SavedVideoInterpreter.BatchAnnotationAdder"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Name="BatchAnnotationAdderWindow" DataContext="{Binding ElementName=BatchAnnotationAdderWindow}"
+        Title="BatchAnnotationAdder" Height="300" Width="300">
+    <StackPanel Orientation="Vertical">
+        <ComboBox Name="LibraryBox" ItemsSource="{Binding Path=Libraries}" SelectionChanged="LibraryBox_SelectionChanged" LostFocus="LibraryBox_LostFocus" IsEditable="True"  Text="Select a Library" Margin="5" Width="100" />
+        <TextBox Name="ValueBox" AcceptsReturn="True" TextWrapping="Wrap" Loaded="ValueBox_Loaded" Text="" Width="240" Height="195" Margin="5"></TextBox>
+        <Button Name="SubmitButton" Content="Submit" Click="Submit_Click" Width="80" Margin="5"></Button>
+    </StackPanel>
+</Window>
